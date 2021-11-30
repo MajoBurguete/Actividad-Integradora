@@ -4,35 +4,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 
-//public static class JsonHelper
-//{
-//    public static T[] FromJson<T>(string json)
-//    {
-//        Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
-//        return wrapper.Items;
-//    }
-
-//    public static string ToJson<T>(T[] array)
-//    {
-//        Wrapper<T> wrapper = new Wrapper<T>();
-//        wrapper.Items = array;
-//        return JsonUtility.ToJson(wrapper);
-//    }
-
-//    public static string ToJson<T>(T[] array, bool prettyPrint)
-//    {
-//        Wrapper<T> wrapper = new Wrapper<T>();
-//        wrapper.Items = array;
-//        return JsonUtility.ToJson(wrapper, prettyPrint);
-//    }
-
-//    [System.Serializable]
-//    private class Wrapper<T>
-//    {
-//        public T[] Items;
-//    }
-//}
-
 [System.Serializable]
 public class Robot
 {
@@ -152,16 +123,16 @@ public class GameManager : MonoBehaviour
                 {
                     for (int i = 0; i < agents.robots.Length; i++)
                     {
-                        positionCar(agents.robots[i], listaRobots[i]);
+                        positionRobot(agents.robots[i], listaRobots[i]);
                     }
                     for (int i = 0; i < agents.boxes.Length; i++)
                     {
                         positionBox(agents.boxes[i], listaBoxes[i]);
-                        for (int j = 0; j < agents.stacks.Length; j++)
-                        {
-                            Debug.Log(agents.stacks[j].ToString());
-                            positionStack(agents.stacks[j], agents.boxes[i], i, j);
-                        }
+                    }
+                    for (int j = 0; j < agents.stacks.Length; j++)
+                    {
+                        Debug.Log(agents.stacks[j].ToString());
+                        positionStack(agents.stacks[j]);
                     }
                 }
                 start++;
@@ -169,15 +140,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void positionCar(Robot robot, GameObject robotObj)
+    void positionRobot(Robot robot, GameObject robotObj)
     {
         robotObj.transform.position = new Vector3(robot.x, 1.5f, robot.y);
     }
     void positionBox(Box box, GameObject boxObj)
     {
-        if (box.active || box.isStack)
+        if (box.active)
         {
-            boxObj.transform.position = new Vector3(box.x, 1.0f, box.y);
+            boxObj.SetActive(true);
         }
         else
         {
@@ -185,74 +156,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void positionStack (Stack stack, Box box, int indexB, int indexS)
+    void positionStack (Stack stack)
     {
-        GameObject prefab = prefabBox2;
+        GameObject prefab = prefabBox;
 
-        if (stack.x == box.x && stack.y == box.y)
+        if (stack.boxNumber == 2)
         {
-            GameObject boxObj = listaBoxes[indexB];
-            listaBoxes[indexB].SetActive(false);
-            if (stack.boxNumber == 2)
-            {
-                if (alreadyExists(stack))
-                {
-                    listaStacks[indexS].SetActive(false);
-                    listaStacks[indexS] = Instantiate(prefab, new Vector3(stack.x, 1.8f, stack.y), Quaternion.identity);
-
-                }
-                else
-                {
-                    listaStacks.Add(Instantiate(prefab, new Vector3(stack.x, 1.8f, stack.y), Quaternion.identity));
-                    stacksV.Add(stack);
-                }
-   
-            }
-            if (stack.boxNumber == 3)
-            {
-                prefab = prefabBox3;
-                if (alreadyExists(stack))
-                {
-                    listaStacks[indexS].SetActive(false);
-                    listaStacks[indexS] = Instantiate(prefab, new Vector3(stack.x, 4.01f, stack.y), Quaternion.identity);
-
-                }
-                else
-                {
-                    listaStacks.Add(Instantiate(prefab, new Vector3(stack.x, 4.01f, stack.y), Quaternion.identity));
-                    stacksV.Add(stack);
-                }
-            }
-            if (stack.boxNumber == 4)
-            {
-                prefab = prefabBox4;
-                if (alreadyExists(stack))
-                {
-                    listaStacks[indexS].SetActive(false);
-                    listaStacks[indexS] = Instantiate(prefab, new Vector3(stack.x, 4.01f, stack.y), Quaternion.identity);
-
-                }
-                else
-                {
-                    listaStacks.Add(Instantiate(prefab, new Vector3(stack.x, 4.01f, stack.y), Quaternion.identity));
-                    stacksV.Add(stack);
-                }
-            }
-            if (stack.boxNumber == 5)
-            {
-                prefab = prefabBox5;
-                if (alreadyExists(stack))
-                {
-                    listaStacks[indexS].SetActive(false);
-                    listaStacks[indexS] = Instantiate(prefab, new Vector3(stack.x, 4.01f, stack.y), Quaternion.identity);
-                }
-                else
-                {
-                    listaStacks.Add(Instantiate(prefab, new Vector3(stack.x, 4.01f, stack.y), Quaternion.identity));
-                    stacksV.Add(stack);
-                }
-
-            }
+            listaBoxes.Add(Instantiate(prefab, new Vector3(stack.x, 2.14f, stack.y), Quaternion.identity));
+        }
+        if (stack.boxNumber == 3)
+        {
+            listaBoxes.Add(Instantiate(prefab, new Vector3(stack.x, 3.265f, stack.y), Quaternion.identity));
+        }
+        if (stack.boxNumber == 4)
+        {
+            listaBoxes.Add(Instantiate(prefab, new Vector3(stack.x, 4.37f, stack.y), Quaternion.identity));
+        }
+        if (stack.boxNumber == 5)
+        {
+            listaBoxes.Add(Instantiate(prefab, new Vector3(stack.x, 5.501f, stack.y), Quaternion.identity));
         }
 
     }
